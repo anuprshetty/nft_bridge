@@ -20,4 +20,6 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
     }
 
     mapping(uint256 tokenId => CustodialNFT custodialNFT) public custodialNFTs;
+
+    event NFTCustody(uint256 indexed tokenId, address holder);
 }
