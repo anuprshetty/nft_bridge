@@ -26,4 +26,8 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
     function setNFTMinter(IERC721Enumerable newNFTMinter) public onlyOwner {
         nftMinter = newNFTMinter;
     }
+
+    function setFeeToken(IERC20 newFeeToken) public onlyOwner {
+        feeToken = newFeeToken;
+    }
 }
