@@ -30,4 +30,35 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
     function setFeeToken(IERC20 newFeeToken) public onlyOwner {
         feeToken = newFeeToken;
     }
+
+    function retainNFT(
+        uint256 tokenId,
+        bool isCustomPaymentCurrency
+    ) public payable nonReentrant {
+        require(
+            nftMinter.ownerOf(tokenId) == msg.sender,
+            "token doesn't belong to the user"
+        );
+        require(
+            custodialNFTs[tokenId].tokenId == 0,
+            "token already stored on the bridge."
+        );
+
+        if (isCustomPaymentCurrency) {
+            feeToken.transferFrom(
+                msg.sender,
+                address(this),
+                nftMovingFeeCustom
+            );
+        } else {
+            require(
+                msg.value == nftMovingFeeNative,
+                "Need to send 0.0025 ether to move nft token from one blockchain to another."
+            );
+        }
+
+        custodialNFTs[tokenId] = CustodialNFT(tokenId, msg.sender);
+        nftMinter.transferFrom(msg.sender, address(this), tokenId);
+        emit NFTCustody(tokenId, msg.sender);
+    }
 }
