@@ -84,4 +84,12 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
     //     custodialNFTs[tokenId] = CustodialNFT(tokenId, newHolder);
     //     emit NFTCustody(tokenId, newHolder);
     // }
+
+    function releaseNFT(
+        uint256 tokenId,
+        address to
+    ) public nonReentrant onlyOwner {
+        delete custodialNFTs[tokenId];
+        nftMinter.transferFrom(address(this), to, tokenId);
+    }
 }
