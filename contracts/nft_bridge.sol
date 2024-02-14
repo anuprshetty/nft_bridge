@@ -105,4 +105,12 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
         );
         return IERC721Receiver.onERC721Received.selector;
     }
+
+    function withdraw(bool isCustomPaymentCurrency) public payable onlyOwner {
+        if (isCustomPaymentCurrency) {
+            feeToken.transfer(msg.sender, feeToken.balanceOf(address(this)));
+        } else {
+            payable(msg.sender).transfer(address(this).balance);
+        }
+    }
 }
