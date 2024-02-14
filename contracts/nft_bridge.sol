@@ -92,4 +92,17 @@ contract NFTBridge is IERC721Receiver, ReentrancyGuard, Ownable {
         delete custodialNFTs[tokenId];
         nftMinter.transferFrom(address(this), to, tokenId);
     }
+
+    function onERC721Received(
+        address,
+        address from,
+        uint256,
+        bytes calldata
+    ) external pure override returns (bytes4) {
+        require(
+            from != address(0x0),
+            "cannot send(or mint) NFT token to nft bridge contract directly"
+        );
+        return IERC721Receiver.onERC721Received.selector;
+    }
 }
