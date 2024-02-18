@@ -1,0 +1,15 @@
+{
+  "mochaExplorer.ui": "bdd",
+  "mochaExplorer.timeout": 60000,
+  "mochaExplorer.retries": 0,
+  "mochaExplorer.exit": true,
+  "mochaExplorer.parallel": false,
+  "mochaExplorer.files": "test/**/*.js",
+  "mochaExplorer.cwd": ".",
+  "mochaExplorer.debuggerPort": 9229,
+  "mochaExplorer.autoload": true,
+  "testExplorer.codeLens": true,
+  "testExplorer.gutterDecoration": true,
+  "testExplorer.onStart": true,
+  "testExplorer.onReload": true
+}
