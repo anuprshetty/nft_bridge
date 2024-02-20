@@ -1,0 +1,9 @@
+{
+  "NFTMinter": {
+    "tom_and_jerry": {
+      "contract_instance_name": "tom_and_jerry",
+      "address": "",
+      "nft_metadata_folder_cid": ""
+    }
+  }
+}
