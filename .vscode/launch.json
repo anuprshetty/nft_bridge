@@ -1,0 +1,83 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+  // See https://code.visualstudio.com/docs/editor/variables-reference
+  // for available variables which can be used in tasks.json, launch.json and settings.json files.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "debug_mocha_tests",
+      "type": "node",
+      "request": "launch",
+      "program": "node_modules/mocha/bin/_mocha",
+      "args": [
+        "test/**/*.js",
+        // "--grep", // --> uncomment this to debug a particular test_case.
+        // "should withdraw contract balance to contract owner address", // --> particular "test_case_name" to be debugged.
+        "--ui",
+        "bdd" // Test interface (e.g., "bdd", "tdd")
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "contract->hardhat_script",
+      "request": "launch",
+      "type": "node",
+      "program": "node_modules/.bin/hardhat",
+      "args": [
+        "--network",
+        "${input:hardhat_network}",
+        "run",
+        "scripts/${input:hardhat_script}"
+      ],
+      "env": {
+        "DEPLOY_MODE": "${input:deploy_mode}"
+      }
+    },
+    {
+      "name": "contract->hardhat_task",
+      "request": "launch",
+      "type": "node",
+      "program": "node_modules/.bin/hardhat",
+      "args": [
+        "--network",
+        "${input:hardhat_network}",
+        "${input:hardhat_task}"
+        // "<hardhat_task_args>" // Example: "--address", "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "hardhat_script",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "ls scripts/"
+      }
+    },
+    {
+      "id": "hardhat_network",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "npx hardhat networks"
+      }
+    },
+    {
+      "id": "deploy_mode",
+      "type": "pickString",
+      "description": "Select <deploy_mode>",
+      "options": ["DeploySetup", "DeployE2E", "SetupE2E"],
+      "default": "DeploySetup"
+    },
+    {
+      "id": "hardhat_task",
+      "type": "promptString",
+      "description": "Enter <hardhat_task>"
+    }
+  ]
+}
