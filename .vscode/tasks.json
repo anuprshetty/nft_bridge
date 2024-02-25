@@ -1,0 +1,91 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+
+  // See https://code.visualstudio.com/docs/editor/variables-reference
+  // for available variables which can be used in tasks.json, launch.json and settings.json files.
+
+  "version": "2.0.0",
+  "type": "shell",
+  "presentation": {
+    "reveal": "always",
+    "panel": "dedicated", // options: 'dedicated', 'shared'
+    "showReuseMessage": false // Controls whether to show the "Terminal will be reused by tasks, press any key to close it" message.
+  },
+
+  "tasks": [
+    {
+      "label": "contract->prerequisites->npm_install",
+      "command": "npm install"
+    },
+    {
+      "label": "contract->prerequisites->npm_cleanup",
+      "command": "rm -rf node_modules && rm -f package-lock.json"
+    },
+    {
+      "label": "contract->prerequisites->npm_reset",
+      "dependsOrder": "sequence", // by default, "parallel"
+      "dependsOn": [
+        "contract->prerequisites->npm_cleanup",
+        "contract->prerequisites->npm_install"
+      ]
+    },
+    {
+      "label": "contract->1.compile",
+      "command": "npx hardhat compile"
+    },
+    {
+      "label": "contract->2.test",
+      "command": "REPORT_GAS=true npx hardhat --network hardhat test"
+    },
+    {
+      "label": "contract->3.coverage",
+      "command": "npx hardhat coverage ; npx hardhat coverage --abi ; npx hardhat coverage --matrix ; open -a 'Google Chrome' coverage/index.html",
+      "detail": "solidity-coverage plugin for hardhat"
+    },
+    {
+      "label": "contract->4.deploy_to_blockchain_1",
+      "command": "DEPLOY_MODE='DeploySetup' npx hardhat --network ${input:hardhat_network} run scripts/deploy_blockchain_1.js"
+    },
+    {
+      "label": "contract->5.deploy_to_blockchain_2",
+      "command": "DEPLOY_MODE='DeploySetup' npx hardhat --network ${input:hardhat_network} run scripts/deploy_blockchain_2.js"
+    },
+    // {
+    //   "label": "contract->6.workflow_for_blockchain_1",
+    //   "command": "npx hardhat --network ${input:hardhat_network} run scripts/workflow_blockchain_1.js"
+    // },
+    // {
+    //   "label": "contract->7.workflow_for_blockchain_2",
+    //   "command": "npx hardhat --network ${input:hardhat_network} run scripts/workflow_blockchain_2.js"
+    // },
+    {
+      "label": "contract->8.clean",
+      "command": "npx hardhat clean && rm -rf artifacts/ contracts/artifacts/ cache/ coverage/ coverage.json humanReadableAbis.json mochaOutput.json testMatrix.json remix-compiler.config.js compiler_config.json .debugger/ remix-slither-report.json dapp_contracts_info/"
+    },
+    {
+      "label": "contract->debug_on->console",
+      "command": "npx hardhat --network ${input:hardhat_network} console"
+    },
+    {
+      "label": "contract->debug_on->remix_ide->1.remixd",
+      "command": "remixd",
+      "detail": "Establish a two-way websocket connection between the local computer and Remix IDE for cwd"
+    },
+    {
+      "label": "contract->debug_on->remix_ide->2.launch_remix_ide",
+      "command": "open -a 'Google Chrome' 'https://remix.ethereum.org'",
+      "detail": "The Native IDE for Web3 Development"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "hardhat_network",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "npx hardhat networks"
+      }
+    }
+  ]
+}
