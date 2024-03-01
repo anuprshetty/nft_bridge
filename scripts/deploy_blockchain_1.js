@@ -177,6 +177,48 @@ class Token extends BaseContract {
   }
 }
 
+class NFTMinter extends BaseContract {
+  constructor(contract_instance_name, output_nft_info) {
+    super("NFTMinter", contract_instance_name);
+
+    this.output_nft_info = output_nft_info;
+    this.contract_constructor_args = [
+      output_nft_info.nft_collection_name,
+      output_nft_info.symbol,
+    ];
+  }
+
+  async addCustomPaymentCurrency(currency_index, name, symbol, token, cost) {
+    await (
+      await this.contract.addCustomPaymentCurrency(name, symbol, token, cost)
+    ).wait();
+
+    const customPaymentCurrency = await this.contract.customPaymentCurrencies(
+      currency_index
+    );
+
+    if (
+      customPaymentCurrency.symbol !== symbol ||
+      customPaymentCurrency.token !== token ||
+      parseInt(customPaymentCurrency.cost) !== cost
+    ) {
+      throw new Error(
+        `Error in ${this.addCustomPaymentCurrency.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+
+  async setBaseURI(NFTMetadataFolderCID) {
+    await (await this.contract.setBaseURI(NFTMetadataFolderCID)).wait();
+
+    if ((await this.contract.baseURI()) !== `ipfs://${NFTMetadataFolderCID}/`) {
+      throw new Error(
+        `Error in ${this.setBaseURI.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+}
+
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
   const DEPLOY_MODE = process.env.DEPLOY_MODE;
