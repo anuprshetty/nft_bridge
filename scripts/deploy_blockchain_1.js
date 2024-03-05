@@ -249,13 +249,120 @@ class NFTBridge extends BaseContract {
   }
 }
 
+class BaseDeploy {
+  constructor() {
+    this.tokens = [];
+    this.nft_collections = [];
+    this.nft_bridges = [];
+  }
 
+  async deploy() {
+    const token_alp = new Token("token_alpha", {
+      name: "Token Alpha",
+      symbol: "TKN-ALP",
+      maxSupply: 1000000,
+    });
 
+    this.tokens = [token_alp];
 
+    for (const token of this.tokens) {
+      await token.deployContract();
+    }
 
+    const hash_wallet_accounts = JSON.parse(
+      fs.readFileSync(
+        path.join(__dirname, "..", "hash_wallet_accounts.json"),
+        "utf8"
+      )
+    );
 
+    for (const token of this.tokens) {
+      for (const account of hash_wallet_accounts) {
+        await token.mint(account.address, 10000);
+      }
+    }
 
+    const output_nfts_info = await this.get_output_nfts_info();
 
+    this.nft_collections = [];
+    for (let output_nft_info in output_nfts_info) {
+      output_nft_info = output_nfts_info[output_nft_info];
+
+      const nft_collection = new NFTMinter(
+        output_nft_info.nft_collection_id,
+        output_nft_info
+      );
+      this.nft_collections.push(nft_collection);
+    }
+
+    for (const nft_collection of this.nft_collections) {
+      await nft_collection.deployContract();
+    }
+
+    for (const [c_index, nft_collection] of this.nft_collections.entries()) {
+      for (const [t_index, token] of this.tokens.entries()) {
+        const cost = parseInt((c_index + 1) * (t_index + 1));
+        await nft_collection.addCustomPaymentCurrency(
+          t_index,
+          token.contract_instance_name,
+          token.symbol,
+          token.contract_address,
+          cost
+        );
+      }
+    }
+
+    const [nft_collection_tnj] = this.nft_collections;
+
+    const nft_bridge = new NFTBridge("nft_bridge");
+    this.nft_bridges = [nft_bridge];
+    await nft_bridge.deployContract();
+
+    await nft_bridge.setNFTMinter(nft_collection_tnj.contract_address);
+    await nft_bridge.setFeeToken(token_alp.contract_address);
+
+    const dapp_contracts_info = [
+      {
+        contractName: this.tokens[0].contract_name,
+        contractInstances: this.tokens.map((token) => ({
+          name: token.contract_instance_name,
+          address: token.contract_address,
+        })),
+      },
+      {
+        contractName: this.nft_collections[0].contract_name,
+        contractInstances: this.nft_collections.map((nft_collection) => ({
+          name: nft_collection.contract_instance_name,
+          address: nft_collection.contract_address,
+          nftCollection: nft_collection.output_nft_info.name,
+        })),
+      },
+      {
+        contractName: this.nft_bridges[0].contract_name,
+        contractInstances: this.nft_bridges.map((nft_bridge) => ({
+          name: nft_bridge.contract_instance_name,
+          address: nft_bridge.contract_address,
+        })),
+      },
+    ];
+
+    for (const dapp_contract_info of dapp_contracts_info) {
+      await Utils.generate_dapp_contract_info(
+        "blockchain_1",
+        dapp_contract_info.contractName,
+        dapp_contract_info.contractInstances
+      );
+    }
+  }
+
+  async setBaseURI() {
+    for (const nft_collection of this.nft_collections) {
+      await nft_collection.setBaseURI(
+        nft_collection.output_nft_info.nft_metadata_folder_cid
+      );
+    }
+  }
+}
 
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
