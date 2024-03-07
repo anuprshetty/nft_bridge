@@ -364,6 +364,30 @@ class BaseDeploy {
   }
 }
 
+class DeploySetup extends BaseDeploy {
+  async deploySetup() {
+    await this.deploy();
+    await this.setup();
+  }
+
+  async get_output_nfts_info() {
+    return JSON.parse(
+      fs.readFileSync(
+        path.join(__dirname, "../..", "nft/outputs/output_nfts_info.json"),
+        "utf8"
+      )
+    );
+  }
+
+  async setup() {
+    await this.setBaseURI();
+  }
+}
+
+
+
+
+
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
   const DEPLOY_MODE = process.env.DEPLOY_MODE;
