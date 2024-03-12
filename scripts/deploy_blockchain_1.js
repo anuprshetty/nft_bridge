@@ -384,7 +384,29 @@ class DeploySetup extends BaseDeploy {
   }
 }
 
+class DeployE2E extends BaseDeploy {
+  async deployE2E() {
+    await this.deploy();
+  }
 
+  async get_output_nfts_info() {
+    const output_nfts_info = {
+      tom_and_jerry: {
+        nft_collection_id: "tom_and_jerry",
+        nft_collection_name: "NFT Collection TomAndJerry",
+        name: "Tom and Jerry",
+        symbol: "COL-TNJ",
+        image_name: "tom_and_jerry.png",
+        num_copies: 0,
+        ipfs_node_rpc_api: "/ip4/127.0.0.1/tcp/5001",
+        nft_image_folder_cid: "",
+        nft_metadata_folder_cid: "",
+      },
+    };
+
+    return output_nfts_info;
+  }
+}
 
 
 
