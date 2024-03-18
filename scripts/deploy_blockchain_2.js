@@ -154,6 +154,33 @@ class BaseContract {
   }
 }
 
+class Token extends BaseContract {
+  constructor(contract_instance_name, contract_constructor_args) {
+    super("Token", contract_instance_name);
+
+    this.symbol = contract_constructor_args.symbol;
+    this.contract_constructor_args = [
+      contract_constructor_args.name,
+      contract_constructor_args.symbol,
+      contract_constructor_args.maxSupply,
+    ];
+  }
+
+  async mint(to, amount) {
+    await (await this.contract.mint(to, amount)).wait();
+
+    if (parseInt(await this.contract.balanceOf(to)) !== amount) {
+      throw new Error(
+        `Error in ${this.mint.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+}
+
+
+
+
+
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
   const DEPLOY_MODE = process.env.DEPLOY_MODE;
