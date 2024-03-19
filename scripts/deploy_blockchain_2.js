@@ -177,7 +177,27 @@ class Token extends BaseContract {
   }
 }
 
+class BridgeNFTMinter extends BaseContract {
+  constructor(contract_instance_name, output_nft_info) {
+    super("BridgeNFTMinter", contract_instance_name);
 
+    this.output_nft_info = output_nft_info;
+    this.contract_constructor_args = [
+      output_nft_info.nft_collection_name,
+      output_nft_info.symbol,
+    ];
+  }
+
+  async setBaseURI(NFTMetadataFolderCID) {
+    await (await this.contract.setBaseURI(NFTMetadataFolderCID)).wait();
+
+    if ((await this.contract.baseURI()) !== `ipfs://${NFTMetadataFolderCID}/`) {
+      throw new Error(
+        `Error in ${this.setBaseURI.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+}
 
 
 
