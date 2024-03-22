@@ -199,7 +199,35 @@ class BridgeNFTMinter extends BaseContract {
   }
 }
 
+class NFTBridge extends BaseContract {
+  constructor(contract_instance_name) {
+    super("NFTBridge", contract_instance_name);
+  }
 
+  async setNFTMinter(newNFTMinter) {
+    await (await this.contract.setNFTMinter(newNFTMinter)).wait();
+
+    const nftMinter = await this.contract.nftMinter();
+
+    if (nftMinter !== newNFTMinter) {
+      throw new Error(
+        `Error in ${this.setNFTMinter.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+
+  async setFeeToken(newFeeToken) {
+    await (await this.contract.setFeeToken(newFeeToken)).wait();
+
+    const feeToken = await this.contract.feeToken();
+
+    if (feeToken !== newFeeToken) {
+      throw new Error(
+        `Error in ${this.setFeeToken.name}() method while setting up ${this.contract_name} contract - ${this.contract_instance_name} contract_instance`
+      );
+    }
+  }
+}
 
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
