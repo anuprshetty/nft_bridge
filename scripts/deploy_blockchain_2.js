@@ -375,7 +375,56 @@ class DeployE2E extends BaseDeploy {
   }
 }
 
+class SetupE2E extends BaseDeploy {
+  async setupE2E() {
+    await this.setup();
+  }
 
+  async setup() {
+    await this.setupPrerequisites();
+    await this.setBaseURI();
+  }
+
+  async setupPrerequisites() {
+    const all_contracts_setup_inputs = JSON.parse(
+      fs.readFileSync(
+        path.join(__dirname, "..", "contracts_setup_inputs.json"),
+        "utf8"
+      )
+    );
+
+    for (let contracts_setup_inputs in all_contracts_setup_inputs) {
+      contracts_setup_inputs =
+        all_contracts_setup_inputs[contracts_setup_inputs];
+      for (let contract_setup_inputs in contracts_setup_inputs) {
+        contract_setup_inputs = contracts_setup_inputs[contract_setup_inputs];
+        if (!contract_setup_inputs.address) {
+          throw new Error(`contracts_setup_inputs.json file is invalid.`);
+        }
+      }
+    }
+
+    const contracts_setup_inputs = all_contracts_setup_inputs.NFTMinter;
+
+    this.nft_collections = [];
+    for (let contract_setup_inputs in contracts_setup_inputs) {
+      contract_setup_inputs = contracts_setup_inputs[contract_setup_inputs];
+
+      const output_nft_info = {
+        nft_metadata_folder_cid: contract_setup_inputs.nft_metadata_folder_cid,
+      };
+
+      const nft_collection = new NFTMinter(
+        contract_setup_inputs.contract_instance_name,
+        output_nft_info
+      );
+      nft_collection.contract_address = contract_setup_inputs.address;
+      await nft_collection.attachContract();
+
+      this.nft_collections.push(nft_collection);
+    }
+  }
+}
 
 async function main() {
   const DEPLOY_MODES = ["DeploySetup", "DeployE2E", "SetupE2E"];
