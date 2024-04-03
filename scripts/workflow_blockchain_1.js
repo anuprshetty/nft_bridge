@@ -68,6 +68,24 @@ async function main() {
   console.log("b1: ", b1);
 
   [owner, user1, user2] = await hre.ethers.getSigners();
+
+  // 0: Minting NFT tokens.
+
+  await (
+    await user1.sendTransaction({
+      to: b1.nftMinter.target,
+      value: ethers.parseEther("0.0005"),
+      data: new hre.ethers.Interface(b1.nftMinterInfo.abi).encodeFunctionData(
+        "mint(address,uint256)",
+        [user1.address, 5]
+      ),
+    })
+  ).wait();
+
+  console.log(
+    "user1_tokens: ",
+    await b1.nftMinter.connect(user1).walletOfOwner(user1.address)
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere
