@@ -86,6 +86,16 @@ async function main() {
     "user1_tokens: ",
     await b1.nftMinter.connect(user1).walletOfOwner(user1.address)
   );
+
+  // Moving NFT from one blockchain to another blockchain.
+
+  const user_account_1 = user1;
+  const user_account_2 = user2;
+  const tokenId = 3;
+
+  // 1:
+  let account_address = await b1.nftMinter.connect(owner).ownerOf(tokenId);
+  expect(account_address).to.equal(user_account_1.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
