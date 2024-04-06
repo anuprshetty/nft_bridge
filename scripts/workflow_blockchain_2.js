@@ -81,6 +81,8 @@ async function main() {
   const tokenId = 3;
 
   try {
+    // 2: check if tokenId exists
+    await b2.nftMinter.connect(owner).ownerOf(tokenId);
   } catch (error) {}
 }
 
