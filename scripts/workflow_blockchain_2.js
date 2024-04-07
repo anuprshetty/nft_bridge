@@ -92,6 +92,11 @@ async function main() {
     );
     let account_address = await b2.nftMinter.connect(owner).ownerOf(tokenId);
     expect(account_address).to.equal(owner.address);
+
+    // 4:
+    await b2.nftMinter.connect(owner).approve(b2.nftBridge.target, tokenId);
+    account_address = await b2.nftMinter.connect(owner).getApproved(tokenId);
+    expect(account_address).to.equal(b2.nftBridge.target);
   }
 }
 
