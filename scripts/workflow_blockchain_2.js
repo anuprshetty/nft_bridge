@@ -83,7 +83,16 @@ async function main() {
   try {
     // 2: check if tokenId exists
     await b2.nftMinter.connect(owner).ownerOf(tokenId);
-  } catch (error) {}
+  } catch (error) {
+    // 3: if tokenId doesn't exists
+    await b2.nftMinter.connect(owner).mint(owner, tokenId);
+    console.log(
+      "owner_tokens: ",
+      await b2.nftMinter.connect(owner).walletOfOwner(owner.address)
+    );
+    let account_address = await b2.nftMinter.connect(owner).ownerOf(tokenId);
+    expect(account_address).to.equal(owner.address);
+  }
 }
 
 // We recommend this pattern to be able to use async/await everywhere
