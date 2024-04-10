@@ -97,6 +97,21 @@ async function main() {
     await b2.nftMinter.connect(owner).approve(b2.nftBridge.target, tokenId);
     account_address = await b2.nftMinter.connect(owner).getApproved(tokenId);
     expect(account_address).to.equal(b2.nftBridge.target);
+
+    // 5:
+    await b2.nftBridge.connect(owner).retainNFT(tokenId);
+
+    console.log(
+      "nftBridge_tokens: ",
+      await b2.nftMinter.connect(owner).walletOfOwner(b2.nftBridge.target)
+    );
+    account_address = await b2.nftMinter.connect(owner).ownerOf(tokenId);
+    expect(account_address).to.equal(b2.nftBridge.target);
+
+    let custodialNFT = await b2.nftBridge.connect(owner).custodialNFTs(tokenId);
+    console.log(`custodialNFT for tokenId : ${tokenId}`, custodialNFT);
+    expect(custodialNFT.tokenId).to.equal(tokenId);
+    expect(custodialNFT.holder).to.equal(owner);
   }
 }
 
