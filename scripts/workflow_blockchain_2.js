@@ -113,6 +113,13 @@ async function main() {
     expect(custodialNFT.tokenId).to.equal(tokenId);
     expect(custodialNFT.holder).to.equal(owner);
   }
+
+  // 6: if tokenId already exists, then it should belong to the bridgeNFT smart contract and stored in custodialNFTs.
+  let account_address = await b2.nftMinter.connect(owner).ownerOf(tokenId);
+  expect(account_address).to.equal(b2.nftBridge.target);
+  let custodialNFT = await b2.nftBridge.connect(owner).custodialNFTs(tokenId);
+  console.log(`custodialNFT for tokenId : ${tokenId}`, custodialNFT);
+  expect(custodialNFT.tokenId).to.equal(tokenId);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
