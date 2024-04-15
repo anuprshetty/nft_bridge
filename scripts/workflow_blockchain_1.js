@@ -96,6 +96,15 @@ async function main() {
   // 1:
   let account_address = await b1.nftMinter.connect(owner).ownerOf(tokenId);
   expect(account_address).to.equal(user_account_1.address);
+
+  // 7:
+  await b1.nftMinter
+    .connect(user_account_1)
+    .approve(b1.nftBridge.target, tokenId);
+  account_address = await b1.nftMinter
+    .connect(user_account_1)
+    .getApproved(tokenId);
+  expect(account_address).to.equal(b1.nftBridge.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
