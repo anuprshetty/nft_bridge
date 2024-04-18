@@ -105,6 +105,18 @@ async function main() {
     .connect(user_account_1)
     .getApproved(tokenId);
   expect(account_address).to.equal(b1.nftBridge.target);
+
+  // 8:
+  let nftMovingFeeCustom = await b1.nftBridge
+    .connect(user_account_1)
+    .nftMovingFeeCustom();
+  await b1.token
+    .connect(user_account_1)
+    .approve(b1.nftBridge.target, nftMovingFeeCustom);
+  let allowance = await b1.token
+    .connect(user_account_1)
+    .allowance(user_account_1.address, b1.nftBridge.target);
+  expect(allowance).to.equal(nftMovingFeeCustom);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
