@@ -117,6 +117,21 @@ async function main() {
     .connect(user_account_1)
     .allowance(user_account_1.address, b1.nftBridge.target);
   expect(allowance).to.equal(nftMovingFeeCustom);
+
+  // 9:
+  await b1.nftBridge.connect(user_account_1).retainNFT(tokenId, true);
+
+  console.log(
+    "nftBridge_tokens: ",
+    await b1.nftMinter.connect(owner).walletOfOwner(b1.nftBridge.target)
+  );
+  account_address = await b1.nftMinter.connect(owner).ownerOf(tokenId);
+  expect(account_address).to.equal(b1.nftBridge.target);
+
+  let custodialNFT = await b1.nftBridge.connect(owner).custodialNFTs(tokenId);
+  console.log(`custodialNFT for tokenId : ${tokenId}`, custodialNFT);
+  expect(custodialNFT.tokenId).to.equal(tokenId);
+  expect(custodialNFT.holder).to.equal(user_account_1.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
