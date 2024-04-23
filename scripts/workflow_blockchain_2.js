@@ -135,6 +135,13 @@ async function main() {
   console.log(`custodialNFT for tokenId : ${tokenId}`, custodialNFT);
   expect(custodialNFT.tokenId).to.equal(0);
   expect(custodialNFT.holder).to.equal(hre.ethers.constants.AddressZero);
+
+  // N-1: Transferring NFT token from one user to another.
+  await b2.nftMinter
+    .connect(user_account_1)
+    .transferFrom(user_account_1.address, user_account_2.address, tokenId);
+  account_address = await b2.nftMinter.connect(owner).ownerOf(tokenId);
+  expect(account_address).to.equal(user_account_2.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
