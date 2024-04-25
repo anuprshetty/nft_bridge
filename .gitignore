@@ -1,16 +1,1 @@
-node_modules/
-artifacts/
-cache/
-coverage/
-coverage.json
-humanReadableAbis.json
-mochaOutput.json
-testMatrix.json
-remix-compiler.config.js
-compiler_config.json
-.debugger/
-remix-slither-report.json
-typechain
-typechain-types
-dapp_contracts_info/
-.states
+.DS_Store
