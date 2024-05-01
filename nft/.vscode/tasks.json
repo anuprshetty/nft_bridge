@@ -1,0 +1,52 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+
+  // See https://code.visualstudio.com/docs/editor/variables-reference
+  // for available variables which can be used in tasks.json, launch.json and settings.json files.
+
+  "version": "2.0.0",
+  "type": "shell",
+  "presentation": {
+    "reveal": "always",
+    "panel": "dedicated", // options: 'dedicated', 'shared'
+    "showReuseMessage": false // Controls whether to show the "Terminal will be reused by tasks, press any key to close it" message.
+  },
+
+  "tasks": [
+    {
+      "label": "nft->prerequisites->venv->activate",
+      "command": ". .venv/bin/activate"
+    },
+    {
+      "label": "nft->prerequisites->venv->deactivate",
+      "command": "deactivate"
+    },
+    {
+      "label": "nft->prerequisites->poetry_install",
+      "command": "poetry install"
+    },
+    {
+      "label": "nft->prerequisites->poetry_cleanup",
+      "command": "rm -rf .venv && rm -f poetry.lock"
+    },
+    {
+      "label": "nft->prerequisites->poetry_reset",
+      "dependsOrder": "sequence", // by default, "parallel"
+      "dependsOn": [
+        "nft->prerequisites->poetry_cleanup",
+        "nft->prerequisites->poetry_install"
+      ]
+    },
+    {
+      "label": "nft->generate_nft",
+      "command": ". .venv/bin/activate && python nft_generator.py",
+      "dependsOrder": "sequence",
+      "dependsOn": ["nft->cleanup_outputs"]
+    },
+    {
+      "label": "nft->cleanup_outputs",
+      "command": "rm -rf outputs/"
+    }
+  ]
+}
