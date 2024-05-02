@@ -1,0 +1,11 @@
+[
+  {
+    "nft_collection_id": "tom_and_jerry",
+    "nft_collection_name": "NFT Collection TomAndJerry",
+    "name": "Tom and Jerry",
+    "symbol": "COL-TNJ",
+    "image_name": "tom_and_jerry.png",
+    "num_copies": 10,
+    "ipfs_node_rpc_api": "/ip4/127.0.0.1/tcp/5001"
+  }
+]

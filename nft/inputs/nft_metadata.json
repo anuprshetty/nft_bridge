@@ -1,0 +1,20 @@
+{
+  "name": "#{image_id} - {name} NFT Image",
+  "description": "{name} NFT Collection",
+  "image": "ipfs://{nft_image_folder_cid}/{image_id}.{image_extension}",
+  "edition": "1",
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "white"
+    },
+    {
+      "trait_type": "Foreground",
+      "value": "Gray"
+    },
+    {
+      "trait_type": "Shadow",
+      "value": "Brown"
+    }
+  ]
+}
