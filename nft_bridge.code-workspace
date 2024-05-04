@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "nft"
+    },
+    {
+      "path": "contract"
+    },
+    {
+      "path": "dapp"
+    }
+  ],
+  "settings": {}
+}
