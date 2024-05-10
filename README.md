@@ -17,7 +17,7 @@ A dapp for moving NFTs from one blockchain to another.
   - IPFS, NFTs, Python
 - contract:
   - Smart contracts (ERC20, IERC20, ERC721Enumerable, IERC721Enumerable, ReentrancyGuard, Ownable, IERC721Receiver)
-  - Hardhat, Solidity, OpenZeppelin, Remix IDE, Blockchain, JavaScript, Mocha Testcases, Solidity code coverage
+  - Hardhat, Ethers.js, Solidity, OpenZeppelin, Remix IDE, Ethereum, EVM (Ethereum Virtual Machine), Blockchain, Etherscan, JavaScript, Mocha Testcases, Solidity code coverage
 - dapp:
   - React.js, Web3.js, Nginx, Metamask wallet
 - Docker and Containers
