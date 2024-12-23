@@ -144,7 +144,9 @@ async function main() {
   expect(allowance).to.equal(nftMovingFeeCustom);
 
   // 9:
-  await b1.nftBridge.connect(user_account_1).retainNFT(tokenId, true);
+  await b1.nftBridge
+    .connect(user_account_1)
+    ["retainNFT(uint256,bool)"](tokenId, true);
 
   console.log(
     "nftBridge_tokens: ",
