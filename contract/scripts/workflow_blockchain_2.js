@@ -61,6 +61,31 @@ class Blockchain {
   }
 }
 
+class Utils {
+  static async getSigners() {
+    var owner = null,
+      user1 = null,
+      user2 = null;
+    if (hre.network.name === "eth_local_net_2") {
+      owner = new hre.ethers.Wallet(
+        hre.network.config.owner_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+      user1 = new hre.ethers.Wallet(
+        hre.network.config.user1_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+      user2 = new hre.ethers.Wallet(
+        hre.network.config.user2_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+    } else {
+      [owner, user1, user2] = await hre.ethers.getSigners();
+    }
+    return [owner, user1, user2];
+  }
+}
+
 async function main() {
   const b2 = new Blockchain(
     "blockchain_2",
@@ -72,7 +97,7 @@ async function main() {
 
   console.log("b2: ", b2);
 
-  [owner, user1, user2] = await hre.ethers.getSigners();
+  [owner, user1, user2] = await Utils.getSigners();
 
   // Moving NFT from one blockchain to another blockchain.
 
