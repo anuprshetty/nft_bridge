@@ -159,7 +159,7 @@ async function main() {
   custodialNFT = await b2.nftBridge.connect(owner).custodialNFTs(tokenId);
   console.log(`custodialNFT for tokenId : ${tokenId}`, custodialNFT);
   expect(custodialNFT.tokenId).to.equal(0);
-  expect(custodialNFT.holder).to.equal(hre.ethers.constants.AddressZero);
+  expect(custodialNFT.holder).to.equal(hre.ethers.ZeroAddress);
 
   // N-1: Transferring NFT token from one user to another.
   await b2.nftMinter
