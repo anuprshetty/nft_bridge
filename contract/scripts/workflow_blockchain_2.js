@@ -1,5 +1,16 @@
 // ECONNRESET error for hardhat network: The ECONNRESET error typically indicates that the TCP connection was abruptly closed by the remote server, or some network issue occurred.
 
+// NOTE:
+// - Keep breakpoint at step-1 in workflow_blockchain_1.js script and at step-2 in workflow_blockchain_2.js script.
+// - While debugging, once a step is completed, pause for few seconds before executing next step so that our previous steps changes are recorded in the world state of the canonical chain in the underlying blockchain.
+
+// NOTE for reverse nft transfer:
+// - interchange hardhat network names (eth_local_net_1 and eth_local_net_2) for hre.network.name in Utils.getSigners() method in both workflow scripts (workflow_blockchain_1.js and workflow_blockchain_2.js).
+// - interchange blockchain names (blockchain_1 and blockchain_2) and nft_minter names (NFTMinter and BridgeNFTMinter) in const b1 and const b2 variables in both scripts(workflow_blockchain_1.js and workflow_blockchain_2.js).
+// - Comment step-0: Minting NFT tokens code.
+// - interchange user1 and user2 in both workflow scripts (workflow_blockchain_1.js and workflow_blockchain_2.js).
+// - Execute workflow_blockchain_1.js in blockchain_2 and workflow_blockchain_2.js in blockchain_1.
+
 const hre = require("hardhat");
 const fs = require("fs");
 const path = require("path");
