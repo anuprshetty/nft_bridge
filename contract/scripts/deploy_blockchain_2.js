@@ -72,6 +72,49 @@ class Utils {
       JSON.stringify(dapp_contract_info, null, 2)
     );
   }
+
+  static async getSigner() {
+    var signer = null;
+    if (hre.network.name === "eth_local_net_2") {
+      signer = new hre.ethers.Wallet(
+        hre.network.config.owner_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+    } else {
+      signer = (await ethers.getSigners())[0];
+    }
+    return signer;
+  }
+
+  static get_hash_wallet_accounts() {
+    var hash_wallet_accounts = [];
+    var owner = null,
+      user1 = null,
+      user2 = null;
+    if (hre.network.name === "eth_local_net_2") {
+      owner = new hre.ethers.Wallet(
+        hre.network.config.owner_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+      user1 = new hre.ethers.Wallet(
+        hre.network.config.user1_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+      user2 = new hre.ethers.Wallet(
+        hre.network.config.user2_private_key,
+        new hre.ethers.JsonRpcProvider(hre.network.config.url)
+      );
+      hash_wallet_accounts = [owner, user1, user2];
+    } else {
+      hash_wallet_accounts = JSON.parse(
+        fs.readFileSync(
+          path.join(__dirname, "..", "hash_wallet_accounts.json"),
+          "utf8"
+        )
+      );
+    }
+    return hash_wallet_accounts;
+  }
 }
 
 class BaseContract {
@@ -91,6 +134,8 @@ class BaseContract {
   }
 
   async deployContract() {
+    const signer = await Utils.getSigner();
+
     const maxRetries = 6;
     const retryDelaySeconds = 10;
 
@@ -99,7 +144,8 @@ class BaseContract {
     while (retries < maxRetries) {
       try {
         const Contract = await hre.ethers.getContractFactory(
-          this.contract_name
+          this.contract_name,
+          signer
         );
         this.contract = await Contract.deploy(
           ...this.contract_constructor_args
@@ -249,12 +295,7 @@ class BaseDeploy {
       await token.deployContract();
     }
 
-    const hash_wallet_accounts = JSON.parse(
-      fs.readFileSync(
-        path.join(__dirname, "..", "hash_wallet_accounts.json"),
-        "utf8"
-      )
-    );
+    const hash_wallet_accounts = Utils.get_hash_wallet_accounts();
 
     for (const token of this.tokens) {
       for (const account of hash_wallet_accounts) {
