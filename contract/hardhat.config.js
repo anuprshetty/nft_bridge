@@ -24,6 +24,18 @@ module.exports = {
     remote: {
       url: "https://hardhat-network.onrender.com",
     },
+    eth_local_net_1: {
+      url: "http://127.0.0.1:<PORT>/",
+      owner_private_key: process.env.ETH_LOCAL_NET_OWNER_PRIVATE_KEY,
+      user1_private_key: process.env.ETH_LOCAL_NET_USER1_PRIVATE_KEY,
+      user2_private_key: process.env.ETH_LOCAL_NET_USER2_PRIVATE_KEY,
+    },
+    eth_local_net_2: {
+      url: "http://127.0.0.1:<PORT>/",
+      owner_private_key: process.env.ETH_LOCAL_NET_OWNER_PRIVATE_KEY,
+      user1_private_key: process.env.ETH_LOCAL_NET_USER1_PRIVATE_KEY,
+      user2_private_key: process.env.ETH_LOCAL_NET_USER2_PRIVATE_KEY,
+    },
     ganache: {
       url: "http://127.0.0.1:7545/", // Update the URL to match your Ganache network configuration
       accounts: {
